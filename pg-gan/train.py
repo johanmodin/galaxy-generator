@@ -5,6 +5,13 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
 # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+# import comet_ml in the top of your file
+from comet_ml import Experiment
+
+# Add the following code anywhere in your machine learning file
+experiment = Experiment(api_key="PUJ3TacW82XYZCjQh2Xv4qkjg",
+                        project_name="galaxy-gans", workspace="erikg")
+
 import os
 import time
 import numpy as np
@@ -14,13 +21,6 @@ import config
 import tfutil
 import dataset
 import misc
-
-# import comet_ml in the top of your file
-from comet_ml import Experiment
-
-# Add the following code anywhere in your machine learning file
-experiment = Experiment(api_key="PUJ3TacW82XYZCjQh2Xv4qkjg",
-                        project_name="galaxy-gans", workspace="erikg")
 
 #----------------------------------------------------------------------------
 # Choose the size and contents of the image snapshot grids that are exported
