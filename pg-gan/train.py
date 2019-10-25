@@ -213,6 +213,8 @@ def train_progressive_gan(
     if save_weight_histograms:
         G.setup_weight_histograms(); D.setup_weight_histograms()
 
+    experiment.set_model_graph(tf.get_default_graph())
+
     print('Training...')
     cur_nimg = int(resume_kimg * 1000)
     cur_tick = 0
@@ -267,6 +269,7 @@ def train_progressive_gan(
             if cur_tick % image_snapshot_ticks == 0 or done:
                 grid_fakes = Gs.run(grid_latents, grid_labels, minibatch_size=sched.minibatch//config.num_gpus)
                 misc.save_image_grid(grid_fakes, os.path.join(result_subdir, 'fakes%06d.png' % (cur_nimg // 1000)), drange=drange_net, grid_size=grid_size)
+                experiment.log_image(os.path.join(result_subdir, 'fakes%06d.png' % (cur_nimg // 1000)))
             if cur_tick % network_snapshot_ticks == 0 or done:
                 misc.save_pkl((G, D, Gs), os.path.join(result_subdir, 'network-snapshot-%06d.pkl' % (cur_nimg // 1000)))
 

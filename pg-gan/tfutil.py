@@ -296,6 +296,7 @@ class Optimizer:
                 self._dev_opt[dev] = self.optimizer_class(name=opt_name, learning_rate=self.learning_rate, **self.optimizer_kwargs)
                 self._dev_grads[dev] = []
             loss = self.apply_loss_scaling(tf.cast(loss, tf.float32))
+            
             grads = self._dev_opt[dev].compute_gradients(loss, vars, gate_gradients=tf.train.Optimizer.GATE_NONE) # disable gating to reduce memory usage
             grads = [(g, v) if g is not None else (tf.zeros_like(v), v) for g, v in grads] # replace disconnected gradients with zeros
             self._dev_grads[dev].append(grads)
@@ -452,7 +453,7 @@ class Network:
         self._build_func_name   = None          # Name of the build function.
         self._build_module_src  = None          # Full source code of the module containing the build function.
         self._run_cache         = dict()        # Cached graph data for Network.run().
-        
+
     def _init_graph(self):
         # Collect inputs.
         self.input_names = []
@@ -466,7 +467,7 @@ class Network:
         if self.name is None:
             self.name = self._build_func_name
         self.scope = tf.get_default_graph().unique_name(self.name.replace('/', '_'), mark_as_used=False)
-        
+
         # Build template graph.
         with tf.variable_scope(self.scope, reuse=tf.AUTO_REUSE):
             assert tf.get_variable_scope().name == self.scope
@@ -474,14 +475,14 @@ class Network:
                 with tf.control_dependencies(None): # ignore surrounding control_dependencies
                     self.input_templates = [tf.placeholder(tf.float32, name=name) for name in self.input_names]
                     out_expr = self._build_func(*self.input_templates, is_template_graph=True, **self.static_kwargs)
-            
+
         # Collect outputs.
         assert is_tf_expression(out_expr) or isinstance(out_expr, tuple)
         self.output_templates = [out_expr] if is_tf_expression(out_expr) else list(out_expr)
         self.output_names = [t.name.split('/')[-1].split(':')[0] for t in self.output_templates]
         self.num_outputs = len(self.output_templates)
         assert self.num_outputs >= 1
-        
+
         # Populate remaining fields.
         self.input_shapes   = [shape_to_list(t.shape) for t in self.input_templates]
         self.output_shapes  = [shape_to_list(t.shape) for t in self.output_templates]
@@ -530,7 +531,7 @@ class Network:
     # Note: This method is very inefficient -- prefer to use tfutil.run(list_of_vars) whenever possible.
     def get_var(self, var_or_localname):
         return self.find_var(var_or_localname).eval()
-        
+
     # Set the value of a given variable based on the given NumPy array.
     # Note: This method is very inefficient -- prefer to use tfutil.set_vars() whenever possible.
     def set_var(self, var_or_localname, new_value):
@@ -560,13 +561,13 @@ class Network:
         self.static_kwargs = state['static_kwargs']
         self._build_module_src = state['build_module_src']
         self._build_func_name = state['build_func_name']
-        
+
         # Parse imported module.
         module = imp.new_module('_tfutil_network_import_module_%d' % len(_network_import_modules))
         exec(self._build_module_src, module.__dict__)
         self._build_func = find_obj_in_module(module, self._build_func_name)
         _network_import_modules.append(module) # avoid gc
-        
+
         # Init graph.
         self._init_graph()
         self.reset_vars()
