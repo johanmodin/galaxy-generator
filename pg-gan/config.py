@@ -50,14 +50,14 @@ sched       = EasyDict()                                    # Options for train.
 grid        = EasyDict(size='1080p', layout='random')       # Options for train.setup_snapshot_image_grid().
 
 # Dataset (choose one).
-desc += '-celebahq';            dataset = EasyDict(tfrecord_dir='celebahq'); train.mirror_augment = True
+#desc += '-celebahq';            dataset = EasyDict(tfrecord_dir='celebahq'); train.mirror_augment = True
 #desc += '-celeba';              dataset = EasyDict(tfrecord_dir='celeba'); train.mirror_augment = True
 #desc += '-cifar10';             dataset = EasyDict(tfrecord_dir='cifar10')
 #desc += '-cifar100';            dataset = EasyDict(tfrecord_dir='cifar100')
 #desc += '-svhn';                dataset = EasyDict(tfrecord_dir='svhn')
 #desc += '-mnist';               dataset = EasyDict(tfrecord_dir='mnist')
 #desc += '-mnistrgb';            dataset = EasyDict(tfrecord_dir='mnistrgb')
-#desc += '-syn1024rgb';          dataset = EasyDict(class_name='dataset.SyntheticDataset', resolution=1024, num_channels=3)
+desc += '-syn1024rgb';          dataset = EasyDict(class_name='dataset.SyntheticDataset', resolution=512, num_channels=3)
 #desc += '-lsun-airplane';       dataset = EasyDict(tfrecord_dir='lsun-airplane-100k');       train.mirror_augment = True
 #desc += '-lsun-bedroom';        dataset = EasyDict(tfrecord_dir='lsun-bedroom-100k');        train.mirror_augment = True
 #desc += '-lsun-bicycle';        dataset = EasyDict(tfrecord_dir='lsun-bicycle-100k');        train.mirror_augment = True
