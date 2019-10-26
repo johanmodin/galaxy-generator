@@ -20,7 +20,7 @@ import numpy as np
 import tensorflow as tf
 
 import wandb
-wandb.init(config=tf.flags.FLAGS, sync_tensorboard=True)
+wandb.init(project="galaxy-generator", config=tf.flags.FLAGS, sync_tensorboard=True)
 
 import config
 import tfutil

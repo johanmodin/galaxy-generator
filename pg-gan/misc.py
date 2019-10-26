@@ -12,7 +12,7 @@ import datetime
 import pickle
 import re
 import numpy as np
-from collections import OrderedDict 
+from collections import OrderedDict
 import scipy.ndimage
 import PIL.Image
 
@@ -111,7 +111,7 @@ class TeeOutputStream(object):
     def __init__(self, child_streams, autoflush=False):
         self.child_streams = child_streams
         self.autoflush = autoflush
- 
+
     def write(self, data):
         for stream in self.child_streams:
             stream.write(data)
