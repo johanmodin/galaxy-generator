@@ -18,7 +18,7 @@ class EasyDict(dict):
 #----------------------------------------------------------------------------
 # Paths.
 
-data_dir = 'datasets'
+data_dir = './'
 result_dir = 'results'
 
 #----------------------------------------------------------------------------
@@ -56,8 +56,8 @@ grid        = EasyDict(size='1080p', layout='random')       # Options for train.
 #desc += '-cifar100';            dataset = EasyDict(tfrecord_dir='cifar100')
 #desc += '-svhn';                dataset = EasyDict(tfrecord_dir='svhn')
 #desc += '-mnist';               dataset = EasyDict(tfrecord_dir='mnist')
-#desc += '-mnistrgb';            dataset = EasyDict(tfrecord_dir='mnistrgb')
-desc += '-syn1024rgb';          dataset = EasyDict(class_name='dataset.SyntheticDataset', resolution=512, num_channels=3)
+desc += '-mnistrgb';            dataset = EasyDict(tfrecord_dir='data')
+#desc += '-syn1024rgb';          dataset = EasyDict(class_name='dataset.SyntheticDataset', resolution=512, num_channels=3)
 #desc += '-lsun-airplane';       dataset = EasyDict(tfrecord_dir='lsun-airplane-100k');       train.mirror_augment = True
 #desc += '-lsun-bedroom';        dataset = EasyDict(tfrecord_dir='lsun-bedroom-100k');        train.mirror_augment = True
 #desc += '-lsun-bicycle';        dataset = EasyDict(tfrecord_dir='lsun-bicycle-100k');        train.mirror_augment = True
@@ -120,7 +120,7 @@ desc += '-fp32'; sched.max_minibatch_per_gpu = {256: 16, 512: 8, 1024: 4}
 #desc += '-BENCHMARK0'; sched.lod_initial_resolution = 1024; train.total_kimg = 10; sched.tick_kimg_base = 1; sched.tick_kimg_dict = {}; train.image_snapshot_ticks = 1000; train.network_snapshot_ticks = 1000
 #desc += '-VERBOSE'; sched.tick_kimg_base = 1; sched.tick_kimg_dict = {}; train.image_snapshot_ticks = 1; train.network_snapshot_ticks = 100
 #desc += '-GRAPH'; train.save_tf_graph = True
-#desc += '-HIST'; train.save_weight_histograms = True
+desc += '-HIST'; train.save_weight_histograms = True
 
 #----------------------------------------------------------------------------
 # Utility scripts.
