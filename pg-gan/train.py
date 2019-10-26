@@ -262,7 +262,7 @@ def train_progressive_gan(
             maintenance_start_time = cur_time
 
             # Report progress.
-            print('tick %-5d kimg %-8.1f lod %-5.2f minibatch %-4d time %-12s sec/tick %-7.1f sec/kimg %-7.2f maintenance %.1f' % (
+            print('tick %-5d kimg %-8.1f lod %-5.2f minibatch %-4d time %-12s sec/tick %-7.1f sec/kimg %-7.2f maintenance %-7.1f resolution %-5d' % (
                 tfutil.autosummary('Progress/tick', cur_tick),
                 tfutil.autosummary('Progress/kimg', cur_nimg / 1000.0),
                 tfutil.autosummary('Progress/lod', sched.lod),
@@ -270,7 +270,8 @@ def train_progressive_gan(
                 misc.format_time(tfutil.autosummary('Timing/total_sec', total_time)),
                 tfutil.autosummary('Timing/sec_per_tick', tick_time),
                 tfutil.autosummary('Timing/sec_per_kimg', tick_time / tick_kimg),
-                tfutil.autosummary('Timing/maintenance_sec', maintenance_time)))
+                tfutil.autosummary('Timing/maintenance_sec', maintenance_time),
+                tfutil.autosummary('Progress/resolution', sched.resolution)))
             tfutil.autosummary('Timing/total_hours', total_time / (60.0 * 60.0))
             tfutil.autosummary('Timing/total_days', total_time / (24.0 * 60.0 * 60.0))
             tfutil.save_summaries(summary_log, cur_nimg)
