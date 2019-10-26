@@ -13,9 +13,14 @@ experiment = Experiment(api_key="PUJ3TacW82XYZCjQh2Xv4qkjg",
                         project_name="galaxy-gans", workspace="erikg")
 
 import os
+os.environ['WANDB_API_KEY'] = "d2c9ff33535bcb87ef12d7f196e8be474849f194"
+
 import time
 import numpy as np
 import tensorflow as tf
+
+import wandb
+wandb.init(config=tf.flags.FLAGS, sync_tensorboard=True)
 
 import config
 import tfutil
@@ -206,7 +211,11 @@ def train_progressive_gan(
     print('Setting up result dir...')
     result_subdir = misc.create_result_subdir(config.result_dir, config.desc)
     misc.save_image_grid(grid_reals, os.path.join(result_subdir, 'reals.png'), drange=training_set.dynamic_range, grid_size=grid_size)
+    experiment.log_image(os.path.join(result_subdir, 'reals.png'))
+    wandb.log({"examples": [wandb.Image(grid_reals, caption="Reals")]})
     misc.save_image_grid(grid_fakes, os.path.join(result_subdir, 'fakes%06d.png' % 0), drange=drange_net, grid_size=grid_size)
+    experiment.log_image(os.path.join(result_subdir, 'fakes%06d.png' % 0))
+    wandb.log({"examples": [wandb.Image(grid_fakes, caption="Fakes")]})
     summary_log = tf.summary.FileWriter(result_subdir)
     if save_tf_graph:
         summary_log.add_graph(tf.get_default_graph())
@@ -237,6 +246,7 @@ def train_progressive_gan(
             for _ in range(D_repeats):
                 tfutil.run([D_train_op, Gs_update_op], {lod_in: sched.lod, lrate_in: sched.D_lrate, minibatch_in: sched.minibatch})
                 cur_nimg += sched.minibatch
+
             tfutil.run([G_train_op], {lod_in: sched.lod, lrate_in: sched.G_lrate, minibatch_in: sched.minibatch})
 
         # Perform maintenance tasks once per tick.
@@ -264,12 +274,14 @@ def train_progressive_gan(
             tfutil.autosummary('Timing/total_hours', total_time / (60.0 * 60.0))
             tfutil.autosummary('Timing/total_days', total_time / (24.0 * 60.0 * 60.0))
             tfutil.save_summaries(summary_log, cur_nimg)
+            wandb.tensorflow.log(tf.summary.merge_all())
 
             # Save snapshots.
             if cur_tick % image_snapshot_ticks == 0 or done:
                 grid_fakes = Gs.run(grid_latents, grid_labels, minibatch_size=sched.minibatch//config.num_gpus)
                 misc.save_image_grid(grid_fakes, os.path.join(result_subdir, 'fakes%06d.png' % (cur_nimg // 1000)), drange=drange_net, grid_size=grid_size)
                 experiment.log_image(os.path.join(result_subdir, 'fakes%06d.png' % (cur_nimg // 1000)))
+                wandb.log({"examples": [wandb.Image(grid_fakes, caption="Fakes")]})
             if cur_tick % network_snapshot_ticks == 0 or done:
                 misc.save_pkl((G, D, Gs), os.path.join(result_subdir, 'network-snapshot-%06d.pkl' % (cur_nimg // 1000)))
 

@@ -9,3 +9,4 @@ cryptography>=2.1.4
 h5py>=2.7.1
 six>=1.11.0
 comet_ml
+wandb
